@@ -18,6 +18,8 @@ from django.contrib.admin.templatetags.admin_static import static
 
 csrf_protect_m = method_decorator(csrf_protect)
 
+MAXIMUM_DEPTH = 10
+
 
 class NestedModelAdmin(admin.ModelAdmin):
 
@@ -66,8 +68,8 @@ class NestedModelAdmin(admin.ModelAdmin):
             self.save_formset(request, form, formset, change=change)
 
     def add_nested_inline_formsets(self, request, inline, formset, depth=0):
-        if depth > 5:
-            raise Exception("Maximum nesting depth reached (5)")
+        if depth > MAXIMUM_DEPTH:
+            raise Exception("Maximum nesting depth reached ({0})".format(MAXIMUM_DEPTH))
         for form in formset.forms:
             nested_formsets = []
             for nested_inline in inline.get_inline_instances(request):
